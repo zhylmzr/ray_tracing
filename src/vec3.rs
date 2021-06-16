@@ -1,5 +1,4 @@
 #![allow(dead_code)]
-
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
@@ -50,14 +49,15 @@ impl Vec3 {
         let len = self.length();
         self / len
     }
-    pub fn write_color(&self) {
+    pub fn gen_colors(&self) -> Vec<u8> {
         let k = 255.999;
-        println!(
-            "{} {} {}",
+        format!(
+            "{} {} {}\n",
             (k * self.0) as i32,
             (k * self.1) as i32,
             (k * self.2) as i32
-        );
+        )
+        .into()
     }
 }
 

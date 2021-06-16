@@ -1,10 +1,13 @@
-use utils::Ray;
-use utils::Vec3;
+use crate::ray::Ray;
+use crate::vec3::Vec3;
 
 use Vec3 as Color;
 use Vec3 as Point3;
 
+use std::fs;
 use std::io::{self, Write};
+
+const FILE_NAME: &'static str = "dist/demo01.ppm";
 
 fn ray_color(r: &Ray) -> Vec3 {
     let unit_direction = r.direction().unit_vector();
@@ -13,7 +16,7 @@ fn ray_color(r: &Ray) -> Vec3 {
     (1.0 - t) * Color(1.0, 1.0, 1.0) + t * Color(0.5, 0.7, 1.0)
 }
 
-fn main() -> io::Result<()> {
+pub fn run() {
     // 图片
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 400;
@@ -31,11 +34,17 @@ fn main() -> io::Result<()> {
         origin - horizontal / 2.0 - vertical / 2.0 - Vec3(0.0, 0.0, focal_length);
 
     // 渲染
-    print!("P3\n{} {}\n255\n", image_width, image_height);
+    let mut image_data = vec![];
+    write!(
+        &mut image_data,
+        "P3\n{} {}\n255\n",
+        image_width, image_height
+    )
+    .unwrap();
 
     for j in (0..image_height).rev() {
         eprint!("\rScanlines remaining: {} ", j);
-        io::stderr().flush()?;
+        io::stderr().flush().unwrap();
 
         for i in 0..image_width {
             let u = i as f64 / image_width as f64;
@@ -46,10 +55,11 @@ fn main() -> io::Result<()> {
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
             let col = ray_color(&r);
-            col.write_color();
+            image_data.append(&mut col.gen_colors());
         }
     }
 
+    fs::write(FILE_NAME, image_data).unwrap();
+
     eprintln!("\nDone.");
-    Ok(())
 }
