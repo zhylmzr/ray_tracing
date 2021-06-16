@@ -34,13 +34,7 @@ pub fn run() {
         origin - horizontal / 2.0 - vertical / 2.0 - Vec3(0.0, 0.0, focal_length);
 
     // 渲染
-    let mut image_data = vec![];
-    write!(
-        &mut image_data,
-        "P3\n{} {}\n255\n",
-        image_width, image_height
-    )
-    .unwrap();
+    let mut image_data = format!("P3\n{} {}\n255\n", image_width, image_height);
 
     for j in (0..image_height).rev() {
         eprint!("\rScanlines remaining: {} ", j);
@@ -55,7 +49,7 @@ pub fn run() {
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
             let col = ray_color(&r);
-            image_data.append(&mut col.gen_colors());
+            image_data.push_str(&col.gen_colors());
         }
     }
 

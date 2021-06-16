@@ -49,7 +49,7 @@ impl Vec3 {
         let len = self.length();
         self / len
     }
-    pub fn gen_colors(&self) -> Vec<u8> {
+    pub fn gen_colors(&self) -> String {
         let k = 255.999;
         format!(
             "{} {} {}\n",
@@ -57,7 +57,6 @@ impl Vec3 {
             (k * self.1) as i32,
             (k * self.2) as i32
         )
-        .into()
     }
 }
 
